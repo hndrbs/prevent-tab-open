@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Domain Restrictor",
+  "version": "1.0",
+  "description": "Restricts new tabs to same domain only",
+  "permissions": [
+    "tabs",
+    "webNavigation"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
