@@ -8,7 +8,10 @@ const prevUrls = {};
 function isDomainBlocked(sourceUrl, newUrl) {
     const sourceDomain = new URL(sourceUrl).hostname;
     const newDomain = new URL(newUrl).hostname;
-    return domainsToKeep.includes(sourceDomain) && sourceDomain !== newDomain;
+    return (
+      !domainsToKeep.includes(newDomain) 
+      && (domainsToKeep.includes(sourceDomain) && sourceDomain !== newDomain)
+    )
 }
 
 
