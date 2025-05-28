@@ -3,6 +3,8 @@ const domainsToKeep = [
     'tv4.lk21official.cc'
 ]; 
 
+const prevUrls = {};
+
 function isDomainBlocked(sourceUrl, newUrl) {
     const sourceDomain = new URL(sourceUrl).hostname;
     const newDomain = new URL(newUrl).hostname;
@@ -20,17 +22,17 @@ chrome.webNavigation.onCreatedNavigationTarget.addListener((details) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, _) => {
-  console.log({ tabId, changeInfo });
-  if (changeInfo.url) {
-    // Get the original URL from the tab's opener
-    chrome.tabs.get(tabId, (currentTab) => {
-      if (currentTab && currentTab.openerTabId) {
-        chrome.tabs.get(currentTab.openerTabId, (openerTab) => {
-          if (isDomainBlocked(openerTab.url, changeInfo.url)) {
-            chrome.tabs.remove(tabId)
-          }
-        });
-      }
-    });
+  if (!changeInfo.url) return;
+
+  const newUrl = changeInfo.url;
+  const prevUrl = prevUrls[tabId];
+  if (prevUrl && isDomainBlocked(prevUrl, newUrl)) {
+    return chrome.tabs.update(tabId, { url: prevUrl });
   }
+  prevUrls[tabId] = newUrl;
+  return;
+});
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    delete prevUrls[tabId];
 });

@@ -5,7 +5,8 @@
   "description": "Restricts new tabs to same domain only",
   "permissions": [
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "scripting"
   ],
   "background": {
     "service_worker": "background.js"
